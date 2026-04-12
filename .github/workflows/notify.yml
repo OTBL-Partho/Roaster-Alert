@@ -23,5 +23,6 @@ jobs:
 
       - name: Send Notifications
         env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: node send-notifications.js

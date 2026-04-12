@@ -4,14 +4,12 @@ const fs = require('fs');
 // 1. Load Roaster Data
 const roaster = JSON.parse(fs.readFileSync('roaster.json', 'utf8'));
 
-// 2. Email Transporter Configuration (Resend SMTP)
+// 2. Email Transporter Configuration (Gmail)
 const transporter = nodemailer.createTransport({
-    host: 'smtp.resend.com',
-    port: 465,
-    secure: true,
+    service: 'gmail',
     auth: {
-        user: 'resend',
-        pass: process.env.RESEND_API_KEY
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
@@ -58,7 +56,7 @@ async function sendAlerts() {
 async function sendEmail(to, subject, text) {
     try {
         await transporter.sendMail({
-            from: '"AMI Roaster System" <onboarding@resend.dev>',
+            from: `"AMI Roaster System" <${process.env.EMAIL_USER}>`,
             to: to,
             subject: subject,
             text: text
