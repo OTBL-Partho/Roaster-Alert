@@ -19,6 +19,12 @@ const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
+const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleDateString('en-GB', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+};
+
 console.log(`Running check for Today: ${todayStr} and Tomorrow: ${tomorrowStr}`);
 
 // 4. Main Notification Logic
@@ -31,8 +37,8 @@ async function sendAlerts() {
         if (entry.date === todayStr) {
             await sendEmail(
                 entry.email,
-                '🚨 Your Monitoring Duty is TODAY',
-                `Hi ${entry.name},\n\nThis is a reminder that your Monitoring Duty is scheduled for TODAY, ${entry.date}.\n\nPlease be prepared.\n\nBest regards,\nAMI Roaster System`
+                `🚨 Your Monitoring Duty is TODAY – ${formatDate(entry.date)}`,
+                `Hi ${entry.name},\n\nThis is a reminder that your Monitoring Duty is scheduled for TODAY, ${formatDate(entry.date)}.\n\nPlease be prepared.\n\nBest regards,\nAMI Roaster System`
             );
         }
 
@@ -40,8 +46,8 @@ async function sendAlerts() {
         if (entry.date === tomorrowStr) {
             await sendEmail(
                 entry.email,
-                '📅 Reminder: Monitoring Duty Tomorrow',
-                `Hi ${entry.name},\n\nThis is an advance reminder that you have monitoring duty scheduled for tomorrow, ${entry.date}.\n\nBest regards,\nAMI Roaster System`
+                `📅 Reminder: Monitoring Duty Tomorrow – ${formatDate(entry.date)}`,
+                `Hi ${entry.name},\n\nThis is an advance reminder that you have monitoring duty scheduled for tomorrow, ${formatDate(entry.date)}.\n\nBest regards,\nAMI Roaster System`
             );
         }
     }
