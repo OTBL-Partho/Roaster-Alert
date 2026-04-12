@@ -50,7 +50,7 @@ async function sendAlerts() {
 async function sendEmail(to, subject, text) {
     try {
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: `"AMI Roaster System" <${process.env.EMAIL_USER}>`,
             to: to,
             subject: subject,
             text: text
