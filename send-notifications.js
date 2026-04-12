@@ -13,11 +13,10 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// 3. Helper: Get Dates
-const todayStr = new Date().toISOString().split('T')[0];
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-const tomorrowStr = tomorrow.toISOString().split('T')[0];
+// 3. Helper: Get Dates (Bangladesh Time UTC+6)
+const nowBD = new Date(Date.now() + 6 * 60 * 60 * 1000);
+const todayStr = nowBD.toISOString().split('T')[0];
+const tomorrowStr = new Date(nowBD.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
 const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('en-GB', {
