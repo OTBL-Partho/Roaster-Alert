@@ -46,7 +46,7 @@ async function sendAlerts() {
         if (entry.date === tomorrowStr) {
             await sendEmail(
                 entry.email,
-                `📅 Reminder: Monitoring Duty Tomorrow – ${formatDate(entry.date)}`,
+                `🗓️🗓️🗓️ Reminder: Monitoring Duty Tomorrow – ${formatDate(entry.date)}`,
                 `Hi ${entry.name},\n\nThis is an advance reminder that you have monitoring duty scheduled for tomorrow, ${formatDate(entry.date)}.\n\nBest regards,\nAMI Roaster System`
             );
         }
