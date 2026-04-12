@@ -1134,12 +1134,15 @@
                 });
 
                 const formatDate = (dateStr) => {
-                    const date = new Date(dateStr);
-                    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+                    const [y, m, d] = dateStr.split('-').map(Number);
+                    return new Date(y, m - 1, d).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
                 };
 
-                const getMonthShort = (dateStr) => new Date(dateStr).toLocaleString('default', { month: 'short' }).toUpperCase();
-                const getDayNum = (dateStr) => new Date(dateStr).getDate();
+                const getMonthShort = (dateStr) => {
+                    const [y, m, d] = dateStr.split('-').map(Number);
+                    return new Date(y, m - 1, d).toLocaleString('default', { month: 'short' }).toUpperCase();
+                };
+                const getDayNum = (dateStr) => parseInt(dateStr.split('-')[2]);
                 const isToday = (dateStr) => dateStr === new Date().toISOString().split('T')[0];
                 const isPast = (dateStr) => dateStr < new Date().toISOString().split('T')[0];
                 const getDayClass = (day) => ['Friday', 'Saturday'].includes(day) ? 'weekend' : 'weekday';
