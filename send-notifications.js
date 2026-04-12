@@ -4,12 +4,14 @@ const fs = require('fs');
 // 1. Load Roaster Data
 const roaster = JSON.parse(fs.readFileSync('roaster.json', 'utf8'));
 
-// 2. Email Transporter Configuration (Using Environment Variables)
+// 2. Email Transporter Configuration (Resend SMTP)
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // or your business SMTP settings
+    host: 'smtp.resend.com',
+    port: 465,
+    secure: true,
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: 'resend',
+        pass: process.env.RESEND_API_KEY
     }
 });
 
@@ -46,7 +48,7 @@ async function sendAlerts() {
         if (entry.date === tomorrowStr) {
             await sendEmail(
                 entry.email,
-                `🗓️🗓️🗓️ Reminder: Monitoring Duty Tomorrow – ${formatDate(entry.date)}`,
+                `🗓️ Reminder: Monitoring Duty Tomorrow – ${formatDate(entry.date)}`,
                 `Hi ${entry.name},\n\nThis is an advance reminder that you have monitoring duty scheduled for tomorrow, ${formatDate(entry.date)}.\n\nBest regards,\nAMI Roaster System`
             );
         }
@@ -56,7 +58,7 @@ async function sendAlerts() {
 async function sendEmail(to, subject, text) {
     try {
         await transporter.sendMail({
-            from: `"AMI Roaster System" <${process.env.EMAIL_USER}>`,
+            from: '"AMI Roaster System" <onboarding@resend.dev>',
             to: to,
             subject: subject,
             text: text
