@@ -803,6 +803,25 @@
             background: rgba(255,255,255,0.06);
         }
 
+        /* ── Filter highlight / dim in calendar view ── */
+        .cal-day.cal-dimmed {
+            opacity: 0.12;
+            filter: blur(1.5px) grayscale(0.6);
+            pointer-events: none;
+            transform: none !important;
+        }
+
+        .cal-day.cal-highlighted {
+            box-shadow: 0 0 0 1.5px rgba(255,255,255,0.18), 0 6px 20px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.07);
+            transform: translateY(-2px);
+        }
+
+        body.light-mode .cal-day.cal-highlighted {
+            box-shadow: 0 0 0 1.5px rgba(168,85,247,0.35), 0 6px 20px rgba(168,85,247,0.12);
+            background: rgba(168,85,247,0.04);
+        }
+
         .cal-date-num {
             font-size: 0.8rem;
             font-weight: 800;
@@ -919,7 +938,58 @@
         @media (max-width: 768px) {
             .schedule-header { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
             .header-stats { width: 100%; justify-content: space-around; }
-            .roaster-container { padding: 1.5rem 1rem; }
+            .roaster-container { padding: 1.5rem 1rem 6rem; }
+
+            /* Calendar — tablet */
+            .calendar-card { padding: 1.25rem 1rem; }
+            .calendar-grid { gap: 5px; }
+            .cal-day { min-height: 72px; }
+            .cal-duty-chip { font-size: 0.65rem; padding: 0.25rem 0.35rem; }
+        }
+
+        @media (max-width: 520px) {
+            .roaster-container { padding: 1rem 0.5rem 6rem; }
+
+            /* Calendar — phone: compact cells, names truncated like mobile calendar apps */
+            .calendar-card { padding: 1rem 0.5rem; }
+            .calendar-grid { gap: 2px; }
+            .cal-day { min-height: 58px; padding: 0.25rem; gap: 0.18rem; }
+            .cal-date-num { font-size: 0.68rem; }
+
+            /* Switch chip to block so text-overflow ellipsis works */
+            .cal-duty-chip {
+                display: block;
+                padding: 0.12rem 0.2rem;
+                font-size: 0.6rem;
+                border-radius: 5px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 100%;
+                box-sizing: border-box;
+                line-height: 1.4;
+            }
+            /* Hide the dot — chip background color already identifies the person */
+            .chip-dot { display: none; }
+
+            .cal-month-title { font-size: 1.05rem; }
+            .cal-nav-btn { width: 34px; height: 34px; border-radius: 10px; }
+            .cal-dow { font-size: 0.6rem; padding: 0.3rem 0; letter-spacing: 0.03em; }
+            .cal-day.is-today-cal::before,
+            .cal-day.is-today-cal::after { top: 5px; right: 5px; width: 7px; height: 7px; }
+        }
+
+        @media (max-width: 380px) {
+            .calendar-card { padding: 0.875rem 0.375rem; }
+            .cal-day { min-height: 50px; padding: 0.2rem; }
+            .cal-date-num { font-size: 0.62rem; }
+            .cal-duty-chip { font-size: 0.56rem; padding: 0.1rem 0.15rem; }
+            .cal-dow { font-size: 0.52rem; }
+
+            /* Floating bar — icon only on very small screens */
+            .btn-label { display: none; }
+            .view-pill { padding: 0.5rem 0.55rem; }
+            .float-theme-btn { padding: 0.5rem 0.55rem; }
         }
     </style>
 </head>
@@ -958,8 +1028,8 @@
                 </div>
             </header>
 
-            <!-- Filters (list view only) -->
-            <section class="filter-glass animate-fade-in" v-show="viewMode === 'list'">
+            <!-- Filters -->
+            <section class="filter-glass animate-fade-in">
                 <div class="filter-row">
                     <div class="input-wrapper">
                         <label>Duty Member</label>
@@ -1082,9 +1152,11 @@
                     <div v-for="(day, i) in calendarDays" :key="i"
                          class="cal-day"
                          :class="{
-                             'other-month': !day.current,
-                             'is-today-cal': day.isToday,
-                             'has-duty': !!day.duty
+                             'other-month':    !day.current,
+                             'is-today-cal':    day.isToday,
+                             'has-duty':       !!day.duty,
+                             'cal-dimmed':      isFiltered && day.current && !calDayMatches(day),
+                             'cal-highlighted': isFiltered && day.current &&  calDayMatches(day)
                          }">
                         <span class="cal-date-num">{{ day.num }}</span>
                         <div v-if="day.duty && day.current"
@@ -1105,13 +1177,13 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
                 </svg>
-                List
+                <span class="btn-label">List</span>
             </button>
             <button class="view-pill" :class="{ active: viewMode === 'calendar' }" @click="viewMode = 'calendar'">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>
                 </svg>
-                Calendar
+                <span class="btn-label">Calendar</span>
             </button>
             <div class="float-divider"></div>
             <button class="float-theme-btn" @click="toggleTheme" :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
@@ -1122,7 +1194,7 @@
                 <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
                 </svg>
-                {{ isDark ? 'Light' : 'Dark' }}
+                <span class="btn-label">{{ isDark ? 'Light' : 'Dark' }}</span>
             </button>
         </div>
 
@@ -1806,6 +1878,8 @@
                     return map;
                 });
 
+                const DOW_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
                 const calendarDays = computed(() => {
                     const yr  = calYear.value;
                     const mo  = calMonth.value;
@@ -1817,25 +1891,40 @@
                     // Padding from previous month
                     for (let i = 0; i < firstDow; i++) {
                         const d = new Date(yr, mo, -(firstDow - i - 1));
-                        days.push({ num: d.getDate(), current: false, isToday: false, duty: null });
+                        days.push({ num: d.getDate(), current: false, isToday: false, duty: null, dateStr: '', dayName: '' });
                     }
                     // Current month days
                     for (let d = 1; d <= lastDate; d++) {
                         const dateStr = `${yr}-${String(mo + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        const dayName = DOW_NAMES[new Date(yr, mo, d).getDay()];
                         days.push({
                             num: d,
                             current: true,
                             isToday: dateStr === today,
                             duty: dutyMap.value[dateStr] || null,
+                            dateStr,
+                            dayName,
                         });
                     }
                     // Padding to fill 42 cells (6 rows × 7 cols)
                     const remaining = 42 - days.length;
                     for (let i = 1; i <= remaining; i++) {
-                        days.push({ num: i, current: false, isToday: false, duty: null });
+                        days.push({ num: i, current: false, isToday: false, duty: null, dateStr: '', dayName: '' });
                     }
                     return days;
                 });
+
+                // Returns true if a calendar day cell matches the active filters
+                const calDayMatches = (day) => {
+                    const { name, date, day: dayFilter } = filters.value;
+                    // Specific date: only that exact cell matches
+                    if (date) return day.dateStr === date;
+                    // Name + day-of-week filters (combinable)
+                    let ok = true;
+                    if (name)      ok = ok && !!(day.duty && day.duty.name === name);
+                    if (dayFilter) ok = ok && day.dayName === dayFilter;
+                    return ok;
+                };
 
                 const getChipStyle = (name) => {
                     const palette = isDark.value ? memberColors : memberColorsLight;
@@ -1933,7 +2022,7 @@
                     isDark, toggleTheme,
                     viewMode,
                     calYear, calMonth, calHeaders, calMonthLabel,
-                    prevMonth, nextMonth, calendarDays,
+                    prevMonth, nextMonth, calendarDays, calDayMatches,
                     getChipStyle, getDotColor,
                 };
             }
