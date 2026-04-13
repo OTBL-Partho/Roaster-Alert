@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMI Roaster Schedule Preview</title>
+    <title>AMI Roaster Schedule</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
+        * { box-sizing: border-box; }
+
         body {
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #1a0533 0%, #0d1b6e 35%, #0a3d6b 65%, #0d1b3e 100%);
+            min-height: 100vh;
             margin: 0;
             padding: 0;
         }
@@ -18,123 +21,134 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem 1rem;
-            color: #1e293b;
+            padding: 2.5rem 1.5rem 6rem;
+            color: #e2e8f0;
         }
 
-        /* Header Styling */
+        /* ── Header ── */
         .schedule-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
+            align-items: center;
+            margin-bottom: 1.75rem;
+            padding: 1.75rem 2rem;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
         }
 
-        .header-main {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
+        .header-main { display: flex; align-items: center; gap: 1.25rem; }
 
         .icon-box {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #f472b6 0%, #a855f7 50%, #6366f1 100%);
             color: white;
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 8px 28px rgba(168,85,247,0.65), 0 0 0 1px rgba(244,114,182,0.4);
+            flex-shrink: 0;
         }
 
         .title-group h1 {
             font-size: 1.875rem;
             font-weight: 800;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.03em;
             margin: 0;
-            color: #0f172a;
+            background: linear-gradient(135deg, #f9a8d4 0%, #c084fc 40%, #67e8f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .title-group p {
-            color: #64748b;
-            margin: 0.25rem 0 0 0;
+            color: #7c8db5;
+            margin: 0.3rem 0 0 0;
             font-size: 0.9375rem;
         }
 
         .header-stats {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            background: white;
-            padding: 0.75rem 1.25rem;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            gap: 1.75rem;
+            background: rgba(255,255,255,0.05);
+            padding: 1rem 1.75rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
+        .stat-item { display: flex; flex-direction: column; }
 
         .stat-label {
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            font-weight: 700;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
         }
 
         .stat-value {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: #1e293b;
+            font-size: 1.375rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
         }
 
-        .stat-value.highlight { color: #3b82f6; }
-        .stat-divider { width: 1px; height: 24px; background: #e2e8f0; }
+        .stat-value.highlight {
+            background: linear-gradient(135deg, #f472b6, #a855f7, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-        /* Filter Glassmorphism */
+        .stat-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.08); }
+
+        /* ── Filters ── */
         .filter-glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.75rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
         }
 
         .filter-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
+            gap: 1.25rem;
             align-items: flex-end;
         }
 
         .input-wrapper label {
             display: block;
-            font-size: 0.8125rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: #475569;
+            color: #64748b;
             margin-bottom: 0.5rem;
             margin-left: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
         }
 
         .select-custom, .date-custom {
             width: 100%;
-            height: 44px;
-            background: white;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
+            height: 46px;
+            background: rgba(255,255,255,0.07);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
             padding: 0 1rem;
             font-size: 0.875rem;
             font-weight: 500;
-            color: #1e293b;
-            transition: all 0.2s;
+            color: #e2e8f0;
+            transition: all 0.25s;
             box-sizing: border-box;
+            font-family: inherit;
         }
 
         .select-custom select {
@@ -144,199 +158,222 @@
             background: transparent;
             outline: none;
             cursor: pointer;
+            color: #e2e8f0;
+            font-family: inherit;
+            font-size: 0.875rem;
         }
 
+        .select-custom select option { background: #1e1b4b; color: #e2e8f0; }
+
         .date-custom:focus, .select-custom:focus-within {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 4px rgba(124,58,237,0.18);
+            background: rgba(124,58,237,0.08);
+            outline: none;
         }
+
+        .date-custom::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; }
 
         .btn-reset {
             width: 100%;
-            height: 44px;
+            height: 46px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            background: white;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            color: #64748b;
-            font-weight: 600;
+            background: linear-gradient(135deg, rgba(244,114,182,0.2), rgba(168,85,247,0.2));
+            border: 1.5px solid rgba(244,114,182,0.45);
+            border-radius: 12px;
+            color: #f9a8d4;
+            font-weight: 700;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
+            font-family: inherit;
         }
 
         .btn-reset:hover:not(:disabled) {
-            background: #f8fafc;
-            border-color: #cbd5e1;
-            color: #1e293b;
+            background: linear-gradient(135deg, rgba(244,114,182,0.4), rgba(168,85,247,0.4));
+            border-color: #f472b6;
+            color: #fbcfe8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(244,114,182,0.4);
         }
 
-        .btn-reset:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-reset:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        /* Table Styling */
+        /* ── Schedule Card ── */
         .schedule-card {
-            background: white;
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(24px);
             border-radius: 24px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid rgba(255,255,255,0.08);
             overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
         }
 
-        .table-responsive {
-            overflow-x: auto;
-        }
+        .table-responsive { overflow-x: auto; }
 
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        .schedule-table { width: 100%; border-collapse: collapse; }
 
         .schedule-table th {
-            background: #f8fafc;
-            padding: 1.25rem 1.5rem;
+            background: rgba(255,255,255,0.04);
+            padding: 1rem 1.5rem;
             text-align: left;
-            font-size: 0.75rem;
-            font-weight: 700;
+            font-size: 0.7rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #64748b;
-            border-bottom: 1px solid #e2e8f0;
+            letter-spacing: 0.1em;
+            color: #475569;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
         }
 
         .schedule-row {
             transition: background 0.2s;
+            border-left: 3px solid transparent;
         }
 
-        .schedule-row:hover { background: #f8fafc; }
+        .schedule-row:hover { background: rgba(255,255,255,0.04); }
 
         .schedule-row td {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 1.125rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: middle;
         }
 
-        /* Date Block */
-        .date-block {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+        /* ── Date Block ── */
+        .date-block { display: flex; align-items: center; gap: 1rem; }
 
         .calendar-icon {
-            width: 48px;
-            height: 52px;
-            background: #f1f5f9;
-            border-radius: 10px;
+            width: 50px;
+            height: 56px;
+            border-radius: 14px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 1px solid #e2e8f0;
             flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .calendar-icon.weekend { background: #fff1f2; border-color: #fecaca; }
-        .calendar-icon.weekend .month-short { background: #ef4444; }
+        .calendar-icon.weekend .month-short {
+            background: linear-gradient(135deg, #ff2d78, #ff6b35);
+        }
+
+        .calendar-icon.weekday .month-short {
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+        }
 
         .month-short {
-            font-size: 0.625rem;
+            font-size: 0.6rem;
             font-weight: 800;
-            background: #475569;
             color: white;
-            padding: 2px 0;
+            padding: 3px 0;
             text-align: center;
+            letter-spacing: 0.07em;
         }
 
         .day-num {
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-size: 1.375rem;
+            font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-grow: 1;
-            color: #1e293b;
+            color: #e2e8f0;
+            background: rgba(255,255,255,0.05);
         }
 
-        .date-text { display: flex; flex-direction: column; }
-        .full-date { font-weight: 600; color: #1e293b; font-size: 0.9375rem; }
-        .weekday { font-size: 0.8125rem; color: #64748b; }
+        .date-text { display: flex; flex-direction: column; gap: 2px; }
+        .full-date { font-weight: 600; color: #cbd5e1; font-size: 0.9375rem; }
+        .weekday-label { font-size: 0.8rem; color: #475569; }
 
-        /* Member Info */
-        .member-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+        /* ── Member ── */
+        .member-info { display: flex; align-items: center; gap: 0.875rem; }
 
         .avatar-mini {
-            width: 32px;
-            height: 32px;
-            background: #eff6ff;
-            color: #3b82f6;
-            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 0.75rem;
-            border: 1px solid #dbeafe;
+            font-weight: 800;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
-        .member-name { font-weight: 700; color: #334155; }
+        .member-name { font-weight: 700; color: #e2e8f0; font-size: 0.9375rem; }
 
-        /* Status Badges */
+        /* ── Badges ── */
         .badge-status {
-            padding: 0.375rem 0.75rem;
-            border-radius: 8px;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
             font-size: 0.75rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
         }
 
-        .badge-status.today { background: #dbeafe; color: #1d4ed8; }
-        .badge-status.past { background: #f1f5f9; color: #64748b; }
-        .badge-status.upcoming { background: #dcfce7; color: #15803d; }
+        .badge-status.today {
+            background: linear-gradient(135deg, rgba(255,45,120,0.25), rgba(255,107,53,0.2));
+            color: #ff8fab;
+            border: 1px solid rgba(255,45,120,0.55);
+            box-shadow: 0 0 18px rgba(255,45,120,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .badge-status.past {
+            background: rgba(71,85,105,0.18);
+            color: #4a5568;
+            border: 1px solid rgba(71,85,105,0.2);
+        }
+
+        .badge-status.upcoming {
+            background: linear-gradient(135deg, rgba(0,230,118,0.15), rgba(0,184,212,0.12));
+            color: #00e676;
+            border: 1px solid rgba(0,230,118,0.4);
+            box-shadow: 0 0 12px rgba(0,230,118,0.2);
+        }
 
         .pulse-dot {
-            width: 6px;
-            height: 6px;
-            background: #1d4ed8;
+            width: 7px;
+            height: 7px;
+            background: #ff2d78;
             border-radius: 50%;
             animation: pulse-dot 1.5s infinite;
+            flex-shrink: 0;
         }
 
         @keyframes pulse-dot {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(29, 78, 216, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
+            0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,45,120,0.8); }
+            70%  { transform: scale(1);    box-shadow: 0 0 0 9px rgba(255,45,120,0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,45,120,0); }
         }
 
-        /* Row States */
+        /* ── Row States ── */
         .is-today {
-            background: #f0f7ff !important;
-            border-left: 4px solid #3b82f6;
+            background: linear-gradient(90deg, rgba(168,85,247,0.15) 0%, rgba(99,102,241,0.07) 100%) !important;
+            border-left: 3px solid #a855f7 !important;
+            box-shadow: inset 4px 0 20px rgba(168,85,247,0.1);
         }
 
-        .is-past { 
-            opacity: 0.6; 
-            filter: grayscale(0.2); 
-        }
+        .is-today .full-date { color: #d8b4fe; }
 
-        .is-past td {
-            text-decoration: line-through;
-            color: #94a3b8;
-        }
+        .is-past { opacity: 0.4; }
 
-        .is-past .badge-status {
-            text-decoration: none !important;
-            display: inline-flex;
-        }
+        .is-past td { text-decoration: line-through; color: #334155; }
 
-        /* Empty State */
+        .is-past .badge-status,
+        .is-past .member-info,
+        .is-past .date-block { text-decoration: none !important; }
+
+        .is-past .badge-status { text-decoration: none !important; display: inline-flex; }
+
+        /* ── Empty State ── */
         .empty-state { padding: 4rem 0 !important; }
+
         .empty-msg {
             display: flex;
             flex-direction: column;
@@ -344,41 +381,558 @@
             gap: 1rem;
         }
 
-        .empty-msg p { color: #64748b; font-weight: 500; margin: 0; }
+        .empty-msg p { color: #475569; font-weight: 500; margin: 0; }
+
         .text-btn {
             background: none;
             border: none;
-            color: #3b82f6;
+            color: #a78bfa;
             font-weight: 700;
             cursor: pointer;
             padding: 0;
             text-decoration: underline;
+            font-family: inherit;
         }
 
-        /* Animations */
-        .animate-slide-down { animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .animate-fade-in { animation: fadeIn 0.8s ease; }
-        .animate-fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* ── Animations ── */
+        .animate-slide-down  { animation: slideDown  0.6s cubic-bezier(0.16,1,0.3,1); }
+        .animate-fade-in     { animation: fadeIn     0.8s ease; }
+        .animate-fade-in-up  { animation: fadeInUp   0.8s cubic-bezier(0.16,1,0.3,1); }
 
         @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn    { from { opacity: 0; }                              to { opacity: 1; } }
+        @keyframes fadeInUp  { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
+        /* ── Theme Toggle Button ── */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #e2e8f0;
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.14);
+            border-color: rgba(255,255,255,0.28);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        }
+
+        .theme-toggle svg { transition: transform 0.4s ease; }
+        .theme-toggle:hover svg { transform: rotate(20deg); }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #f472b6, #a855f7); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #fb7bb8, #c084fc); }
+
+        /* ════════════════════════════════
+           LIGHT MODE OVERRIDES
+        ════════════════════════════════ */
+        body.light-mode {
+            background: linear-gradient(135deg, #eef2ff 0%, #fdf4ff 50%, #ecfeff 100%);
+        }
+
+        body.light-mode .roaster-container { color: #0f172a; }
+
+        body.light-mode .schedule-header {
+            background: rgba(255,255,255,0.85);
+            border-color: rgba(168,85,247,0.2);
+            box-shadow: 0 8px 32px rgba(168,85,247,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+
+        body.light-mode .title-group p { color: #64748b; }
+
+        body.light-mode .header-stats {
+            background: rgba(255,255,255,0.7);
+            border-color: rgba(168,85,247,0.15);
+        }
+
+        body.light-mode .stat-value { color: #0f172a; }
+        body.light-mode .stat-divider { background: rgba(0,0,0,0.1); }
+        body.light-mode .stat-label { color: #94a3b8; }
+
+        body.light-mode .theme-toggle {
+            border-color: rgba(0,0,0,0.12);
+            background: rgba(0,0,0,0.05);
+            color: #334155;
+        }
+
+        body.light-mode .theme-toggle:hover {
+            background: rgba(168,85,247,0.1);
+            border-color: rgba(168,85,247,0.4);
+            color: #7c3aed;
+        }
+
+        body.light-mode .filter-glass {
+            background: rgba(255,255,255,0.8);
+            border-color: rgba(168,85,247,0.15);
+            box-shadow: 0 8px 24px rgba(168,85,247,0.08);
+        }
+
+        body.light-mode .input-wrapper label { color: #94a3b8; }
+
+        body.light-mode .select-custom,
+        body.light-mode .date-custom {
+            background: white;
+            border-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        body.light-mode .select-custom select { color: #1e293b; }
+        body.light-mode .select-custom select option { background: white; color: #1e293b; }
+
+        body.light-mode .date-custom:focus,
+        body.light-mode .select-custom:focus-within {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 4px rgba(168,85,247,0.15);
+            background: rgba(168,85,247,0.04);
+        }
+
+        body.light-mode .date-custom::-webkit-calendar-picker-indicator { filter: none; }
+
+        body.light-mode .btn-reset {
+            background: linear-gradient(135deg, rgba(244,114,182,0.12), rgba(168,85,247,0.12));
+            border-color: rgba(244,114,182,0.4);
+            color: #be185d;
+        }
+
+        body.light-mode .btn-reset:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(244,114,182,0.25), rgba(168,85,247,0.25));
+            border-color: #f472b6;
+            color: #9d174d;
+            box-shadow: 0 6px 20px rgba(244,114,182,0.25);
+        }
+
+        body.light-mode .schedule-card {
+            background: rgba(255,255,255,0.9);
+            border-color: rgba(168,85,247,0.12);
+            box-shadow: 0 20px 50px rgba(168,85,247,0.1);
+        }
+
+        body.light-mode .schedule-table th {
+            background: rgba(168,85,247,0.05);
+            color: #94a3b8;
+            border-bottom-color: rgba(168,85,247,0.1);
+        }
+
+        body.light-mode .schedule-row:hover { background: rgba(168,85,247,0.04); }
+
+        body.light-mode .schedule-row td { border-bottom-color: rgba(0,0,0,0.05); }
+
+        body.light-mode .calendar-icon { border-color: rgba(0,0,0,0.08); }
+
+        body.light-mode .day-num {
+            background: rgba(0,0,0,0.03);
+            color: #1e293b;
+        }
+
+        body.light-mode .full-date { color: #1e293b; }
+        body.light-mode .weekday-label { color: #94a3b8; }
+        body.light-mode .member-name { color: #1e293b; }
+
+        body.light-mode .badge-status.past {
+            background: rgba(100,116,139,0.1);
+            color: #94a3b8;
+            border-color: rgba(100,116,139,0.2);
+        }
+
+        body.light-mode .badge-status.upcoming {
+            background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.1));
+            color: #4f46e5;
+            border: 1px solid rgba(99,102,241,0.45);
+            box-shadow: 0 0 12px rgba(99,102,241,0.18);
+        }
+
+        body.light-mode .is-today {
+            background: linear-gradient(90deg, rgba(168,85,247,0.1) 0%, rgba(99,102,241,0.04) 100%) !important;
+            border-left-color: #a855f7 !important;
+        }
+
+        body.light-mode .is-today .full-date { color: #7c3aed; }
+
+        body.light-mode .is-past { opacity: 0.5; }
+        body.light-mode .is-past td { color: #cbd5e1; }
+
+        body.light-mode .empty-msg p { color: #94a3b8; }
+        body.light-mode .text-btn { color: #a855f7; }
+
+        body.light-mode ::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); }
+
+        /* ── Floating Controls Bar ── */
+        .floating-bar {
+            position: fixed;
+            bottom: 1.75rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(10, 8, 35, 0.82);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 999px;
+            padding: 5px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04), 0 2px 8px rgba(168,85,247,0.2);
+            animation: floatIn 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .float-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255,255,255,0.12);
+            margin: 0 2px;
+            flex-shrink: 0;
+        }
+
+        .view-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.5rem 1.125rem;
+            border-radius: 999px;
+            border: none;
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: #64748b;
+            background: transparent;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+
+        .view-pill.active {
+            background: linear-gradient(135deg, #f472b6, #a855f7, #6366f1);
+            color: white;
+            box-shadow: 0 4px 14px rgba(168,85,247,0.5);
+        }
+
+        .view-pill:not(.active):hover {
+            color: #e2e8f0;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .float-theme-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.5rem 1.125rem;
+            border-radius: 999px;
+            border: none;
+            font-family: inherit;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: #64748b;
+            background: transparent;
+            white-space: nowrap;
+        }
+
+        .float-theme-btn:hover {
+            color: #e2e8f0;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .float-theme-btn svg { transition: transform 0.4s ease; }
+        .float-theme-btn:hover svg { transform: rotate(22deg); }
+
+        /* ── Calendar Card ── */
+        .calendar-card {
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(24px);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+            padding: 1.75rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .cal-month-title {
+            font-size: 1.375rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f9a8d4 0%, #c084fc 40%, #67e8f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .cal-nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.06);
+            color: #94a3b8;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .cal-nav-btn:hover {
+            background: rgba(168,85,247,0.2);
+            border-color: rgba(168,85,247,0.5);
+            color: #d8b4fe;
+            transform: scale(1.05);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .cal-dow {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #334155;
+            padding: 0.5rem 0;
+        }
+
+        .cal-dow.weekend-header { color: #f472b6; }
+
+        .cal-day {
+            min-height: 84px;
+            border-radius: 14px;
+            padding: 0.55rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .cal-day.other-month {
+            opacity: 0.2;
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .cal-day.is-today-cal {
+            position: relative;
+            background: rgba(168,85,247,0.12);
+            animation: today-border-blink 0.65s steps(1) infinite;
+        }
+
+        /* Ping ring — dark mode */
+        .cal-day.is-today-cal::before {
+            content: '';
+            position: absolute;
+            top: 7px; right: 7px;
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: rgba(192,132,252,0.55);
+            animation: today-ping 1s ease-out infinite;
+            pointer-events: none;
+        }
+
+        /* Blinking dot — dark mode */
+        .cal-day.is-today-cal::after {
+            content: '';
+            position: absolute;
+            top: 7px; right: 7px;
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: #c084fc;
+            box-shadow: 0 0 8px rgba(192,132,252,0.9);
+            animation: today-dot-blink 0.65s steps(1) infinite;
+            pointer-events: none;
+        }
+
+        @keyframes today-ping {
+            0%        { transform: scale(1);   opacity: 0.85; }
+            70%, 100% { transform: scale(3.2); opacity: 0; }
+        }
+
+        @keyframes today-dot-blink {
+            0%, 49%  { opacity: 1; }
+            50%, 100%{ opacity: 0; }
+        }
+
+        @keyframes today-border-blink {
+            0%, 49% {
+                border-color: rgba(192,132,252,0.95);
+                box-shadow: 0 0 18px rgba(168,85,247,0.55), 0 0 6px rgba(192,132,252,0.7);
+            }
+            50%, 100% {
+                border-color: rgba(168,85,247,0.15);
+                box-shadow: none;
+            }
+        }
+
+        .cal-day.has-duty:not(.other-month):hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+            border-color: rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .cal-date-num {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            line-height: 1;
+        }
+
+        .cal-day.is-today-cal .cal-date-num { color: #e9d5ff; font-size: 0.875rem; }
+
+        .cal-duty-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.45rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            line-height: 1;
+            word-break: break-word;
+        }
+
+        .chip-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ── Light Mode: View & Calendar ── */
+        body.light-mode .floating-bar {
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(168,85,247,0.22);
+            box-shadow: 0 8px 40px rgba(168,85,247,0.18), 0 2px 12px rgba(0,0,0,0.1);
+        }
+
+        body.light-mode .float-divider { background: rgba(0,0,0,0.1); }
+
+        body.light-mode .view-pill:not(.active) { color: #94a3b8; }
+
+        body.light-mode .view-pill:not(.active):hover {
+            color: #334155;
+            background: rgba(0,0,0,0.05);
+        }
+
+        body.light-mode .float-theme-btn { color: #94a3b8; }
+
+        body.light-mode .float-theme-btn:hover {
+            color: #334155;
+            background: rgba(0,0,0,0.05);
+        }
+
+        body.light-mode .calendar-card {
+            background: rgba(255,255,255,0.88);
+            border-color: rgba(168,85,247,0.14);
+            box-shadow: 0 20px 50px rgba(168,85,247,0.1);
+        }
+
+        body.light-mode .cal-nav-btn {
+            background: white;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+
+        body.light-mode .cal-nav-btn:hover {
+            background: rgba(168,85,247,0.08);
+            border-color: rgba(168,85,247,0.4);
+            color: #7c3aed;
+        }
+
+        body.light-mode .cal-dow { color: #94a3b8; }
+        body.light-mode .cal-dow.weekend-header { color: #db2777; }
+
+        body.light-mode .cal-day {
+            background: rgba(0,0,0,0.025);
+            border-color: rgba(0,0,0,0.07);
+        }
+
+        /* Light mode — reuse same animations, just change colors */
+        body.light-mode .cal-day.is-today-cal {
+            background: rgba(124,58,237,0.07);
+            animation: today-border-blink-light 0.65s steps(1) infinite;
+        }
+
+        body.light-mode .cal-day.is-today-cal::before {
+            background: rgba(124,58,237,0.4);
+        }
+
+        body.light-mode .cal-day.is-today-cal::after {
+            background: #7c3aed;
+            box-shadow: 0 0 8px rgba(124,58,237,0.85);
+        }
+
+        @keyframes today-border-blink-light {
+            0%, 49% {
+                border-color: rgba(124,58,237,0.9);
+                box-shadow: 0 0 14px rgba(124,58,237,0.35), 0 0 5px rgba(124,58,237,0.5);
+            }
+            50%, 100% {
+                border-color: rgba(124,58,237,0.12);
+                box-shadow: none;
+            }
+        }
+
+        body.light-mode .cal-day.has-duty:not(.other-month):hover {
+            background: rgba(168,85,247,0.05);
+            border-color: rgba(168,85,247,0.2);
+            box-shadow: 0 8px 20px rgba(168,85,247,0.12);
+        }
+
+        body.light-mode .cal-date-num { color: #0f172a; font-weight: 800; }
+        body.light-mode .cal-day.is-today-cal .cal-date-num { color: #5b21b6; font-weight: 900; }
+
+        /* ── Responsive ── */
         @media (max-width: 768px) {
-            .schedule-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .schedule-header { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
             .header-stats { width: 100%; justify-content: space-around; }
+            .roaster-container { padding: 1.5rem 1rem; }
         }
     </style>
 </head>
 <body>
     <div id="app">
         <div class="roaster-container">
-            <!-- Sophisticated Header -->
+
+            <!-- Header -->
             <header class="schedule-header animate-slide-down">
                 <div class="header-main">
                     <div class="icon-box">
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
+                            <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
                         </svg>
                     </div>
                     <div class="title-group">
@@ -396,11 +950,16 @@
                         <span class="stat-label">Completed</span>
                         <span class="stat-value highlight">{{ completedCount }}</span>
                     </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-label">Upcoming</span>
+                        <span class="stat-value">{{ roaster.length - completedCount }}</span>
+                    </div>
                 </div>
             </header>
 
-            <!-- Glassmorphic Filters -->
-            <section class="filter-glass animate-fade-in">
+            <!-- Filters (list view only) -->
+            <section class="filter-glass animate-fade-in" v-show="viewMode === 'list'">
                 <div class="filter-row">
                     <div class="input-wrapper">
                         <label>Duty Member</label>
@@ -411,12 +970,10 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="input-wrapper">
                         <label>Specific Date</label>
                         <input type="date" v-model="filters.date" class="date-custom" />
                     </div>
-
                     <div class="input-wrapper">
                         <label>Day of Week</label>
                         <div class="select-custom">
@@ -426,11 +983,11 @@
                             </select>
                         </div>
                     </div>
-
-                    <div class="actions">
+                    <div class="input-wrapper">
+                        <label>&nbsp;</label>
                         <button class="btn-reset" @click="resetFilters" :disabled="!isFiltered">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
                             </svg>
                             Clear Filters
                         </button>
@@ -438,21 +995,22 @@
                 </div>
             </section>
 
-            <!-- Refined Schedule List -->
-            <main class="schedule-card animate-fade-in-up">
+            <!-- Schedule Table (list view) -->
+            <main class="schedule-card animate-fade-in-up" v-show="viewMode === 'list'">
                 <div class="table-responsive">
                     <table class="schedule-table">
                         <thead>
                             <tr>
-                                <th>Date Information</th>
-                                <th>Assignment</th>
+                                <th>Date</th>
+                                <th>Assigned Member</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item, index) in filteredRoaster" 
-                                :key="index" 
+                            <tr v-for="(item, index) in filteredRoaster"
+                                :key="index"
                                 :class="{ 'is-today': isToday(item.date), 'is-past': isPast(item.date) }"
+                                :style="getRowStyle(item)"
                                 class="schedule-row">
                                 <td>
                                     <div class="date-block">
@@ -462,30 +1020,30 @@
                                         </div>
                                         <div class="date-text">
                                             <span class="full-date">{{ formatDate(item.date) }}</span>
-                                            <span class="weekday">{{ item.day }}</span>
+                                            <span class="weekday-label">{{ item.day }}</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="member-info">
-                                        <div class="avatar-mini">{{ item.name.charAt(0) }}</div>
+                                        <div class="avatar-mini" :style="getAvatarStyle(item.name)">
+                                            {{ item.name.charAt(0) }}
+                                        </div>
                                         <span class="member-name">{{ item.name }}</span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="status-wrap">
-                                        <span v-if="isToday(item.date)" class="badge-status today">
-                                            <span class="pulse-dot"></span> Active Now
-                                        </span>
-                                        <span v-else-if="isPast(item.date)" class="badge-status past">Completed</span>
-                                        <span v-else class="badge-status upcoming">Scheduled</span>
-                                    </div>
+                                    <span v-if="isToday(item.date)" class="badge-status today">
+                                        <span class="pulse-dot"></span> Active Now
+                                    </span>
+                                    <span v-else-if="isPast(item.date)" class="badge-status past">Completed</span>
+                                    <span v-else class="badge-status upcoming">Scheduled</span>
                                 </td>
                             </tr>
                             <tr v-if="filteredRoaster.length === 0">
                                 <td colspan="3" class="empty-state">
                                     <div class="empty-msg">
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(124,58,237,0.4)" stroke-width="1.5">
                                             <circle cx="12" cy="12" r="10"/><path d="M8 12h8"/>
                                         </svg>
                                         <p>No duty matches your current filter</p>
@@ -497,7 +1055,77 @@
                     </table>
                 </div>
             </main>
+
+            <!-- Calendar View -->
+            <section class="calendar-card animate-fade-in-up" v-show="viewMode === 'calendar'">
+                <div class="calendar-nav">
+                    <button class="cal-nav-btn" @click="prevMonth" title="Previous month">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <span class="cal-month-title">{{ calMonthLabel }}</span>
+                    <button class="cal-nav-btn" @click="nextMonth" title="Next month">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="calendar-grid">
+                    <!-- Day-of-week headers -->
+                    <div v-for="h in calHeaders" :key="h.label"
+                         class="cal-dow"
+                         :class="{ 'weekend-header': h.isWeekend }">
+                        {{ h.label }}
+                    </div>
+                    <!-- Day cells -->
+                    <div v-for="(day, i) in calendarDays" :key="i"
+                         class="cal-day"
+                         :class="{
+                             'other-month': !day.current,
+                             'is-today-cal': day.isToday,
+                             'has-duty': !!day.duty
+                         }">
+                        <span class="cal-date-num">{{ day.num }}</span>
+                        <div v-if="day.duty && day.current"
+                             class="cal-duty-chip"
+                             :style="getChipStyle(day.duty.name)">
+                            <span class="chip-dot" :style="{ background: getDotColor(day.duty.name) }"></span>
+                            {{ day.duty.name }}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
+
+        <!-- Floating Controls Bar (always visible on scroll) -->
+        <div class="floating-bar">
+            <button class="view-pill" :class="{ active: viewMode === 'list' }" @click="viewMode = 'list'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+                </svg>
+                List
+            </button>
+            <button class="view-pill" :class="{ active: viewMode === 'calendar' }" @click="viewMode = 'calendar'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+                Calendar
+            </button>
+            <div class="float-divider"></div>
+            <button class="float-theme-btn" @click="toggleTheme" :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+                <svg v-if="isDark" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                </svg>
+                {{ isDark ? 'Light' : 'Dark' }}
+            </button>
+        </div>
+
     </div>
 
     <script>
@@ -1106,11 +1734,135 @@
   }
 ];
 
+        // Per-member color palette (vivid)
+        const memberColors = {
+            'Mominul': { bg: 'rgba(255,193,7,0.22)',   border: '#ffc107', text: '#ffe066' },
+            'Lira':    { bg: 'rgba(255,45,120,0.22)',   border: '#ff2d78', text: '#ff80ab' },
+            'Topu':    { bg: 'rgba(0,229,255,0.18)',    border: '#00e5ff', text: '#80f4ff' },
+            'Poly':    { bg: 'rgba(179,0,255,0.2)',     border: '#b300ff', text: '#df80ff' },
+            'Kaniz':   { bg: 'rgba(0,230,118,0.18)',    border: '#00e676', text: '#69ffa9' },
+            'Toma':    { bg: 'rgba(255,109,0,0.22)',    border: '#ff6d00', text: '#ffab40' },
+            'Bithi':   { bg: 'rgba(41,182,246,0.2)',    border: '#29b6f6', text: '#80d8ff' },
+            'Partho':  { bg: 'rgba(255,23,68,0.2)',     border: '#ff1744', text: '#ff80ab' },
+        };
+
+        const defaultColor = { bg: 'rgba(100,116,139,0.18)', border: '#64748b', text: '#94a3b8' };
+
+        // High-contrast colors for light mode
+        const memberColorsLight = {
+            'Mominul': { bg: 'rgba(217,119,6,0.14)',   border: '#d97706', text: '#92400e' },
+            'Lira':    { bg: 'rgba(219,39,119,0.12)',   border: '#db2777', text: '#9d174d' },
+            'Topu':    { bg: 'rgba(8,145,178,0.13)',    border: '#0891b2', text: '#0e7490' },
+            'Poly':    { bg: 'rgba(124,58,237,0.12)',   border: '#7c3aed', text: '#5b21b6' },
+            'Kaniz':   { bg: 'rgba(5,150,105,0.13)',    border: '#059669', text: '#065f46' },
+            'Toma':    { bg: 'rgba(234,88,12,0.13)',    border: '#ea580c', text: '#9a3412' },
+            'Bithi':   { bg: 'rgba(37,99,235,0.12)',    border: '#2563eb', text: '#1e40af' },
+            'Partho':  { bg: 'rgba(225,29,72,0.12)',    border: '#e11d48', text: '#9f1239' },
+        };
+        const defaultColorLight = { bg: 'rgba(100,116,139,0.1)', border: '#64748b', text: '#334155' };
+
         const app = createApp({
             setup() {
                 const roaster = ref(roasterData);
                 const filters = ref({ name: '', date: '', day: '' });
                 const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+                // View mode
+                const viewMode = ref('list');
+
+                // Calendar state — default to current month
+                const calYear  = ref(new Date().getFullYear());
+                const calMonth = ref(new Date().getMonth()); // 0-indexed
+
+                const calHeaders = [
+                    { label: 'Sun', isWeekend: false },
+                    { label: 'Mon', isWeekend: false },
+                    { label: 'Tue', isWeekend: false },
+                    { label: 'Wed', isWeekend: false },
+                    { label: 'Thu', isWeekend: false },
+                    { label: 'Fri', isWeekend: true  },
+                    { label: 'Sat', isWeekend: true  },
+                ];
+
+                const calMonthLabel = computed(() =>
+                    new Date(calYear.value, calMonth.value, 1)
+                        .toLocaleString('default', { month: 'long', year: 'numeric' })
+                );
+
+                const prevMonth = () => {
+                    if (calMonth.value === 0) { calMonth.value = 11; calYear.value--; }
+                    else { calMonth.value--; }
+                };
+
+                const nextMonth = () => {
+                    if (calMonth.value === 11) { calMonth.value = 0; calYear.value++; }
+                    else { calMonth.value++; }
+                };
+
+                // Fast date → duty lookup map
+                const dutyMap = computed(() => {
+                    const map = {};
+                    roaster.value.forEach(item => { map[item.date] = item; });
+                    return map;
+                });
+
+                const calendarDays = computed(() => {
+                    const yr  = calYear.value;
+                    const mo  = calMonth.value;
+                    const today = new Date().toISOString().split('T')[0];
+                    const firstDow = new Date(yr, mo, 1).getDay(); // 0=Sun
+                    const lastDate = new Date(yr, mo + 1, 0).getDate();
+                    const days = [];
+
+                    // Padding from previous month
+                    for (let i = 0; i < firstDow; i++) {
+                        const d = new Date(yr, mo, -(firstDow - i - 1));
+                        days.push({ num: d.getDate(), current: false, isToday: false, duty: null });
+                    }
+                    // Current month days
+                    for (let d = 1; d <= lastDate; d++) {
+                        const dateStr = `${yr}-${String(mo + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        days.push({
+                            num: d,
+                            current: true,
+                            isToday: dateStr === today,
+                            duty: dutyMap.value[dateStr] || null,
+                        });
+                    }
+                    // Padding to fill 42 cells (6 rows × 7 cols)
+                    const remaining = 42 - days.length;
+                    for (let i = 1; i <= remaining; i++) {
+                        days.push({ num: i, current: false, isToday: false, duty: null });
+                    }
+                    return days;
+                });
+
+                const getChipStyle = (name) => {
+                    const palette = isDark.value ? memberColors : memberColorsLight;
+                    const fallback = isDark.value ? defaultColor : defaultColorLight;
+                    const c = palette[name] || fallback;
+                    return { background: c.bg, border: `1px solid ${c.border}`, color: c.text };
+                };
+
+                const getDotColor = (name) => {
+                    const palette = isDark.value ? memberColors : memberColorsLight;
+                    const fallback = isDark.value ? defaultColor : defaultColorLight;
+                    return (palette[name] || fallback).border;
+                };
+
+                // Theme toggle (persisted in localStorage)
+                const savedTheme = localStorage.getItem('roaster-theme');
+                const isDark = ref(savedTheme ? savedTheme === 'dark' : true);
+
+                const applyTheme = () => {
+                    document.body.classList.toggle('light-mode', !isDark.value);
+                    localStorage.setItem('roaster-theme', isDark.value ? 'dark' : 'light');
+                };
+
+                const toggleTheme = () => {
+                    isDark.value = !isDark.value;
+                    applyTheme();
+                };
 
                 const uniqueNames = computed(() => {
                     const names = new Set(roaster.value.map(item => item.name).filter(Boolean));
@@ -1123,7 +1875,7 @@
                     return roaster.value.filter(item => {
                         const matchesName = !filters.value.name || item.name === filters.value.name;
                         const matchesDate = !filters.value.date || item.date === filters.value.date;
-                        const matchesDay = !filters.value.day || item.day === filters.value.day;
+                        const matchesDay  = !filters.value.day  || item.day  === filters.value.day;
                         return matchesName && matchesDate && matchesDay;
                     });
                 });
@@ -1142,14 +1894,30 @@
                     const [y, m, d] = dateStr.split('-').map(Number);
                     return new Date(y, m - 1, d).toLocaleString('default', { month: 'short' }).toUpperCase();
                 };
-                const getDayNum = (dateStr) => parseInt(dateStr.split('-')[2]);
-                const isToday = (dateStr) => dateStr === new Date().toISOString().split('T')[0];
-                const isPast = (dateStr) => dateStr < new Date().toISOString().split('T')[0];
-                const getDayClass = (day) => ['Friday', 'Saturday'].includes(day) ? 'weekend' : 'weekday';
+
+                const getDayNum    = (dateStr) => parseInt(dateStr.split('-')[2]);
+                const isToday      = (dateStr) => dateStr === new Date().toISOString().split('T')[0];
+                const isPast       = (dateStr) => dateStr < new Date().toISOString().split('T')[0];
+                const getDayClass  = (day) => ['Friday', 'Saturday'].includes(day) ? 'weekend' : 'weekday';
                 const resetFilters = () => filters.value = { name: '', date: '', day: '' };
 
+                const getAvatarStyle = (name) => {
+                    const palette = isDark.value ? memberColors : memberColorsLight;
+                    const fallback = isDark.value ? defaultColor : defaultColorLight;
+                    const c = palette[name] || fallback;
+                    return { background: c.bg, border: `1.5px solid ${c.border}`, color: c.text };
+                };
+
+                const getRowStyle = (item) => {
+                    if (isToday(item.date)) return {};
+                    const palette = isDark.value ? memberColors : memberColorsLight;
+                    const fallback = isDark.value ? defaultColor : defaultColorLight;
+                    const c = palette[item.name] || fallback;
+                    return { borderLeftColor: c.border };
+                };
+
                 onMounted(() => {
-                    // Auto-scroll to today's duty on load
+                    applyTheme();
                     setTimeout(() => {
                         const todayRow = document.querySelector('.is-today');
                         if (todayRow) todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1157,20 +1925,16 @@
                 });
 
                 return {
-                    roaster,
-                    filters,
-                    weekDays,
-                    uniqueNames,
-                    isFiltered,
-                    filteredRoaster,
-                    completedCount,
-                    formatDate,
-                    getMonthShort,
-                    getDayNum,
-                    isToday,
-                    isPast,
-                    getDayClass,
-                    resetFilters
+                    roaster, filters, weekDays,
+                    uniqueNames, isFiltered, filteredRoaster, completedCount,
+                    formatDate, getMonthShort, getDayNum,
+                    isToday, isPast, getDayClass, resetFilters,
+                    getAvatarStyle, getRowStyle,
+                    isDark, toggleTheme,
+                    viewMode,
+                    calYear, calMonth, calHeaders, calMonthLabel,
+                    prevMonth, nextMonth, calendarDays,
+                    getChipStyle, getDotColor,
                 };
             }
         });
