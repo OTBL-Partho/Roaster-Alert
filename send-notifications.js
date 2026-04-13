@@ -4,9 +4,11 @@ const fs = require('fs');
 // 1. Load Roaster Data
 const roaster = JSON.parse(fs.readFileSync('roaster.json', 'utf8'));
 
-// 2. Email Transporter Configuration (Gmail)
+// 2. Email Transporter Configuration (Microsoft 365)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.office365.com',
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
