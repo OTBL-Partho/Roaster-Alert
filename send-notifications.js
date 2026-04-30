@@ -34,10 +34,12 @@ async function sendAlerts() {
 
         // Notification for TODAY
         if (entry.date === todayStr) {
+            const isMaintenanceDay = entry.day === 'Sunday' || entry.day === 'Wednesday';
+            const maintenanceNote = isMaintenanceDay ? '\n\nYou have to run MAINTENANCE BATCH today.' : '';
             await sendEmail(
                 entry.email,
                 `🚨 Your Monitoring Duty is TODAY – ${formatDate(entry.date)}`,
-                `Hi ${entry.name},\n\nThis is a reminder that your Monitoring Duty is scheduled for TODAY, ${formatDate(entry.date)}.\n\nPlease be prepared.\n\nBest regards,\nAMI Roaster System`
+                `Hi ${entry.name},\n\nThis is a reminder that your Monitoring Duty is scheduled for TODAY, ${formatDate(entry.date)}.\n\nPlease be prepared.${maintenanceNote}\n\nBest regards,\nAMI Roaster System`
             );
         }
 
