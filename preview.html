@@ -850,6 +850,19 @@
             flex-shrink: 0;
         }
 
+        .cal-maintenance-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #f59e0b;
+            background: rgba(245,158,11,0.12);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 5px;
+            padding: 0.15rem 0.35rem;
+            margin-top: 0.2rem;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
         /* ── Light Mode: View & Calendar ── */
         body.light-mode .floating-bar {
             background: rgba(255,255,255,0.92);
@@ -1164,6 +1177,10 @@
                              :style="getChipStyle(day.duty.name)">
                             <span class="chip-dot" :style="{ background: getDotColor(day.duty.name) }"></span>
                             {{ day.duty.name }}
+                        </div>
+                        <div v-if="day.duty && day.current && (day.dayName === 'Sunday' || day.dayName === 'Wednesday')"
+                             class="cal-maintenance-label">
+                            🔧 MAINTENANCE BATCH
                         </div>
                     </div>
                 </div>
