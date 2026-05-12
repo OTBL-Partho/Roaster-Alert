@@ -850,6 +850,29 @@
             flex-shrink: 0;
         }
 
+        /* ── Scroll To Top Button ── */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 5rem;
+            right: 1.5rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border: 1.5px solid rgba(168,85,247,0.5);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 999;
+        }
+        .scroll-top-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(124,58,237,0.55); }
+        .scroll-top-btn.hidden { opacity: 0; pointer-events: none; transform: translateY(10px); }
+        body.light-mode .scroll-top-btn { background: linear-gradient(135deg, #6d28d9, #7c3aed); }
+
         .cal-maintenance-label {
             font-size: 0.6rem;
             font-weight: 700;
@@ -1220,6 +1243,16 @@
                 <span class="btn-label">{{ isDark ? 'Light' : 'Dark' }}</span>
             </button>
         </div>
+
+    <!-- Scroll To Top / Jump To Today Button -->
+    <button class="scroll-top-btn" @click="handleScrollBtn" :title="showScrollTop ? 'Back to top' : 'Jump to today\'s duty'">
+        <svg v-if="showScrollTop" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+        <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+        </svg>
+    </button>
 
     </div>
 
@@ -2028,12 +2061,25 @@
                     return { borderLeftColor: c.border };
                 };
 
+                const showScrollTop = ref(false);
+                const handleScrollBtn = () => {
+                    if (showScrollTop.value) {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        const todayEl = document.querySelector('.is-today, .is-today-cal');
+                        if (todayEl) todayEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                };
+
                 onMounted(() => {
                     applyTheme();
                     setTimeout(() => {
                         const todayRow = document.querySelector('.is-today');
                         if (todayRow) todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 500);
+                    window.addEventListener('scroll', () => {
+                        showScrollTop.value = window.scrollY > 300;
+                    });
                 });
 
                 return {
@@ -2047,6 +2093,7 @@
                     calYear, calMonth, calHeaders, calMonthLabel,
                     prevMonth, nextMonth, calendarDays, calDayMatches,
                     getChipStyle, getDotColor,
+                    showScrollTop, handleScrollBtn,
                 };
             }
         });
