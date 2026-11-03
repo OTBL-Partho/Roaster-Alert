@@ -2,8 +2,8 @@ name: Daily Monitoring Notification
 
 on:
   schedule:
-    # Runs at 18:01 UTC every day (12:01 AM Bangladesh time UTC+6)
-    - cron: '1 18 * * *'
+    # Runs at 10:00 UTC every day (4:00 PM Bangladesh time UTC+6)
+    - cron: '0 10 * * *'
   workflow_dispatch: # Allows manual triggering for testing
 
 jobs:
