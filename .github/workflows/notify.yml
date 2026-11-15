@@ -1,10 +1,9 @@
 name: Daily Monitoring Notification
 
 on:
-  schedule:
-    # Runs at 10:00 UTC every day (4:00 PM Bangladesh time UTC+6)
-    - cron: '0 10 * * *'
-  workflow_dispatch: # Allows manual triggering for testing
+  # Triggered daily at 4:00 PM Bangladesh time (UTC+6) by an external scheduler (cron-job.org)
+  # calling the workflow_dispatch API. GitHub's own schedule ran 6-10 hours late, so it is not used.
+  workflow_dispatch:
 
 jobs:
   notify:

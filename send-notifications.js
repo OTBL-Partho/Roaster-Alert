@@ -14,9 +14,13 @@ const transporter = nodemailer.createTransport({
 });
 
 // 3. Helper: Get Dates (Bangladesh Time UTC+6)
+const DAY_MS = 24 * 60 * 60 * 1000;
 const nowBD = new Date(Date.now() + 6 * 60 * 60 * 1000);
-const todayStr = nowBD.toISOString().split('T')[0];
-const tomorrowStr = new Date(nowBD.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+// A run delayed past midnight (before noon BD) still belongs to the previous day's 4:00 PM slot,
+// otherwise "tomorrow" shifts forward and one person is skipped while the next gets two emails.
+const runDayBD = nowBD.getUTCHours() < 12 ? new Date(nowBD.getTime() - DAY_MS) : nowBD;
+const todayStr = runDayBD.toISOString().split('T')[0];
+const tomorrowStr = new Date(runDayBD.getTime() + DAY_MS).toISOString().split('T')[0];
 
 const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('en-GB', {
